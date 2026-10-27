@@ -25,7 +25,41 @@ It partially adapts to the custom accent color in logseq's settings. You can cha
 
 ## Install
 
-Here are two ways of installing theme in Logseq.
+### Logseq DB
+
+Use **`custom-db.css`** for **Logseq DB 2.0.2**. It includes light and
+dark modes, your selected accent color, DB tag pills, round checkboxes, property
+panels, code blocks, and table styling that preserves virtualized row sizes.
+The original `custom.css` below is for file-based graphs.
+
+1. Open your DB graph, then **Settings → General → Custom theme → Edit custom.css**.
+2. Put this import at the **top** of the editor, before any other CSS rules:
+
+   ```css
+   @import url("https://cdn.jsdelivr.net/gh/julve/logseq-bonofix-theme@bonofix-logseq-db/custom-db.css");
+   ```
+
+3. Save the file; reload Logseq if the theme does not appear immediately.
+
+The URL requires the `bonofix-logseq-db` branch and `custom-db.css` to be published
+in this public fork. jsDelivr caches branch URLs; for a fixed version, replace
+`bonofix-logseq-db` in the URL with the published commit SHA. Use only the DB
+stylesheet, rather than also importing the file-graph theme.
+
+For offline use, paste the contents of [`custom-db.css`](custom-db.css) into the
+same in-app editor instead of importing it. The optional IBM Plex font still
+loads from a CDN, with system-font fallbacks when offline. In DB graphs this
+custom.css is stored in the database, so a graph folder is not required. If you
+already configured `:custom-css-url` in config.edn, remove that setting to use the
+graph's custom.css; the configured URL takes precedence.
+
+Compatibility targets the official [Logseq DB 2.0.2 source](https://github.com/logseq/logseq/tree/533ac4382a7b69baa98de3a973bff90305b212dc).
+Browser regression checks cover representative DB markup; this is not a claim
+that every Logseq DB release or a running DB graph has been tested.
+
+### File-based Logseq
+
+Here are two ways of installing the original theme in file-based Logseq.
 
 ### Install plugin
 
@@ -85,6 +119,38 @@ npm install
   ```shell
   npm run build
   ```
+
+For the DB version (Node.js 18 or newer for the browser tests):
+
+```shell
+npm ci
+npm run build:db       # source/db.scss → custom-db.css (ready to import)
+npm run watch:db       # development output: css/db.css
+```
+
+Run the DB browser checks with an installed Chromium browser:
+
+```shell
+npx playwright install chromium  # once, if Chromium is not already installed
+npm run test:db
+```
+
+The tests use `/usr/bin/chromium` when available, otherwise Playwright's installed
+Chromium. Set `CHROMIUM_PATH` to choose another executable. They cover light/dark
+modes and accent colors, menus, property editing controls, task states, tags,
+virtualized table geometry, font preferences, and narrow layouts using a DOM
+fixture based on upstream DB components. They do not start Logseq itself.
+
+If installation is blocked by the lockfile's old `registry.npmmirror.com` URLs,
+cache the same pinned packages from the official registry, then install with the
+original lockfile and integrity checks intact:
+
+```shell
+for archive in immutable/-/immutable-4.3.4.tgz sass/-/sass-1.69.5.tgz source-map-js/-/source-map-js-1.0.2.tgz; do
+  npm cache add "https://registry.npmjs.org/$archive"
+done
+npm ci --prefer-offline
+```
 
 ## Thanks
 

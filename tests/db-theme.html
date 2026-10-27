@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-color="logseq" data-font="default" data-font-global="false">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logseq DB theme regression fixture</title>
+  <!-- A small DB DOM/CSS fixture, not an embedded Logseq application.
+       Selectors and geometry from Logseq DB 2.0.2 (533ac4382a7b69baa98de3a973bff90305b212dc):
+       components/{theme,table,property,page}.css, resources/css/codemirror.lsradix.css
+       and deps/shui components.cljs.
+       Tailwind utility declarations used here are expanded into plain CSS. -->
+  <style>
+    :root {
+      --ls-font-family: Inter, sans-serif;
+      --background: 0 0% 100%; --foreground: 222.2 84% 4.9%;
+      --popover: 0 0% 100%; --popover-foreground: 222.2 84% 4.9%;
+      --border: 300 1% 92%; --primary: 200 97% 37%; --primary-foreground: 0 0% 100%;
+      --ring: 200 97% 37%; --muted: 210 40% 96%; --muted-foreground: 0 0% 52%;
+      --ls-primary-background-color: #fff; --ls-secondary-background-color: #f7f7f7;
+      --ls-primary-text-color: #433f38; --ls-secondary-text-color: #161e2e;
+      --ls-link-text-color: #106ba3; --ls-border-color: #ccc;
+      --lx-gray-01: #fcfcfc; --lx-gray-02: #f9f9f9; --lx-gray-03: #f0f0f0;
+      --lx-gray-04: #e8e8e8; --lx-gray-05: #e0e0e0; --lx-gray-06: #d9d9d9;
+      --lx-gray-07: #cecece; --lx-gray-08: #bbb; --lx-gray-09: #8d8d8d;
+      --lx-gray-10: #838383; --lx-gray-11: #646464; --lx-gray-12: #202020;
+      --lx-accent-03: #e0f2fe; --lx-accent-06: #87ceeb;
+      --lx-accent-09: #0284c7; --lx-accent-10: #0369a1; --lx-accent-11: #0e7490;
+      --ls-page-title-size: 36px;
+    }
+    html[data-theme=dark] {
+      --background: 192 100% 11%; --foreground: 0 0% 95%;
+      --popover: 192 100% 11%; --popover-foreground: 0 0% 95%;
+      --border: 192 100% 14%; --muted: 192 100% 13%; --muted-foreground: 0 0% 49%;
+      --ls-primary-background-color: #002b36; --ls-secondary-background-color: #023643;
+      --ls-primary-text-color: #a4b5b6; --ls-secondary-text-color: #dfdfdf;
+      --ls-link-text-color: #8abbbb; --ls-border-color: #0e5263;
+      --lx-gray-01: #111; --lx-gray-02: #191919; --lx-gray-03: #222;
+      --lx-gray-04: #2a2a2a; --lx-gray-05: #313131; --lx-gray-06: #3a3a3a;
+      --lx-gray-07: #484848; --lx-gray-08: #606060; --lx-gray-09: #6e6e6e;
+      --lx-gray-10: #7b7b7b; --lx-gray-11: #b4b4b4; --lx-gray-12: #eee;
+    }
+    html[data-color=logseq] {
+      --lx-accent-03: var(--rx-logseq-03); --lx-accent-06: var(--rx-logseq-06);
+      --lx-accent-09: var(--rx-logseq-09); --lx-accent-10: var(--rx-logseq-10);
+      --lx-accent-11: var(--rx-logseq-11); --lx-accent-12: var(--rx-logseq-12);
+    }
+    /* Logseq sets custom accents on body as well as nested theme containers. */
+    html[data-color=blue] body, html[data-color=blue] .light-theme, html[data-color=blue] .dark-theme {
+      --primary: 206 100% 50%; --accent: 206 100% 50%; --ring: 206 82% 65%;
+      --lx-accent-03: #dff1ff; --lx-accent-06: #acd8fc;
+      --lx-accent-09: #0090ff; --lx-accent-10: #0588f0; --lx-accent-11: var(--fixture-blue-link, #0d74ce);
+      --ls-primary-background-color: var(--fixture-blue-background, #fbfcfd); --ls-secondary-background-color: var(--fixture-blue-secondary, #f8f9fa);
+      --ls-primary-text-color: var(--fixture-blue-text, #1c2024); --ls-link-text-color: var(--fixture-blue-link, #0d74ce);
+    }
+    html[data-color=green] body, html[data-color=green] .light-theme, html[data-color=green] .dark-theme {
+      --primary: 151 55% 42%; --accent: 151 55% 42%; --ring: 151 55% 62%;
+      --lx-accent-03: #d6f1e2; --lx-accent-06: #92ceac;
+      --lx-accent-09: #30a46c; --lx-accent-10: #2b9a66; --lx-accent-11: var(--fixture-green-link, #218358);
+      --ls-primary-background-color: var(--fixture-green-background, #fbfdfc); --ls-secondary-background-color: var(--fixture-green-secondary, #f8faf9);
+      --ls-primary-text-color: var(--fixture-green-text, #19231d); --ls-link-text-color: var(--fixture-green-link, #218358);
+    }
+    /* Upstream Radix scales switch at html, while palettes consume them on
+       body/theme containers. Do not add spurious selector specificity. */
+    html[data-theme=dark] {
+      --fixture-blue-background: #111113; --fixture-blue-secondary: #18191b;
+      --fixture-blue-text: #edeef0; --fixture-blue-link: #70b8ff;
+      --fixture-green-background: #101211; --fixture-green-secondary: #171b18;
+      --fixture-green-text: #eceeec; --fixture-green-link: #3dd68c;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: var(--ls-font-family); background: var(--ls-primary-background-color); color: var(--ls-primary-text-color); }
+    button, input { font: inherit; }
+    a { color: var(--ls-link-text-color); }
+    main.theme-container-inner { --left-sidebar-bg-color: var(--lx-gray-02); }
+    #main-content-container { padding: 32px; }
+    .cp__sidebar-main-content { max-width: 960px; margin: auto; }
+    .ls-page-title { display: flex; }
+    .ls-page-title .page-title { display: block; font-size: var(--ls-page-title-size); }
+    .ls-page-title .edit-input { width: 100%; border: 0; padding: 0; background: transparent; color: inherit; }
+    .ls-block { padding: 2px 0; }
+    .content .block-main-container { display: flex; min-width: 0; gap: 8px; }
+    .block-main-content { min-width: 0; flex: 1; }
+    .block-head-wrap { min-height: 24px; }
+    .ls-page-properties { margin-top: 16px; }
+    .properties-panel { border-radius: 6px; overflow: hidden; }
+    .property-pair.property-panel-row { display: grid; grid-template-columns: fit-content(260px) minmax(0, 1fr); gap: 12px; padding-right: 12px; }
+    .property-key-panel { min-width: 150px; min-height: 28px; display: flex; align-items: center; }
+    .property-value-panel { min-width: 0; min-height: 28px; display: flex; align-items: center; }
+    .property-value-inner[data-type=url] a { overflow-wrap: anywhere; }
+    .property-value-container .jtrigger:focus-visible { outline: none; background: var(--lx-gray-03); border-radius: 4px; }
+    .jtrigger { cursor: pointer; background: transparent; border: 0; padding: 2px; color: inherit; }
+    a.tag { display: inline-flex; padding: 0 4px; white-space: nowrap; }
+    .ui__checkbox { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; padding: 0; border-radius: 2px; border: 1px solid hsl(var(--primary)); background: transparent; color: hsl(var(--primary-foreground)); cursor: pointer; }
+    .ui__checkbox[data-checked] { background: hsl(var(--primary)); }
+    .ui__checkbox:disabled, .ui__checkbox[data-disabled] { cursor: not-allowed; opacity: 0.5; }
+    .ui__checkbox:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    .form-checkbox { width: 16px; height: 16px; }
+    .ls-table { position: relative; margin-top: 24px; }
+    .ls-table-rows { overflow-x: auto; }
+    .ls-table-rows > .relative { min-width: 720px; padding: 34px 0 38px; position: relative; }
+    .ls-table-header { position: absolute; left: 0; top: 0; display: flex; width: 720px; min-width: 100%; background: var(--lx-gray-01); }
+    .ls-table-header-cell { padding: 6px; width: 360px; color: hsl(var(--muted-foreground)); border-right: 1px solid hsl(var(--border)); }
+    .ls-table-rows div[data-index], .ls-table-row { height: 33px; min-height: 33px; max-height: 33px; overflow: hidden; }
+    .ls-table-row { display: flex; border-bottom: 1px solid hsl(var(--border)); background: var(--lx-gray-01); }
+    .ls-table-row div, .ls-table-row span, .ls-table-row a { white-space: nowrap; }
+    .ls-table-cell { height: 100%; max-height: 33px; overflow: hidden; width: 360px; padding: 4px; }
+    .ls-table-cell > div { height: 100%; min-width: 0; overflow: hidden; }
+    .ls-table-cell .table-block-title { text-overflow: ellipsis; overflow: hidden; }
+    .ls-table-header.ls-fixed { position: fixed; top: 48px !important; }
+    .ui__popover-content { background: hsl(var(--popover)); color: hsl(var(--popover-foreground)); border: 1px solid hsl(var(--border)); border-radius: 6px; padding: 16px; max-width: calc(100vw - 16px); }
+    .ui__popover-content[hidden] { display: none; }
+    .ui__popover-content label { display: block; }
+    .ui__popover-content input { max-width: 100%; }
+    .extensions__code { margin-top: 16px; }
+    .CodeMirror { background: #fdf6e3; color: #657b83; font-family: monospace; padding: 8px; }
+    .CodeMirror-gutters { background: #eee8d5; }
+    html[data-theme=dark] .cm-s-solarized { background: #002b36; color: #839496; }
+    .cm-s-lsradix.cm-s-light { background-color: var(--lx-gray-02); color: var(--lx-gray-10); }
+    .cm-s-lsradix.cm-s-dark { background-color: var(--lx-gray-01); color: var(--ls-primary-text-color); }
+    .dark .cm-s-lsradix.cm-s-dark { background-color: var(--lx-gray-02); }
+    .cm-s-lsradix.cm-s-dark .CodeMirror-gutters { background-color: var(--lx-gray-02); }
+    html[data-font=serif] .ls-block, .ls-font-serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+    html[data-font=serif][data-font-global=true] { --ls-font-family: Lyon-Text, Georgia, ui-serif, serif; }
+    html[data-font=mono] .ls-block, .ls-font-mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+    html[data-font=mono][data-font-global=true] { --ls-font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+    @media (max-width: 640px) { #main-content-container { padding: 8px 16px; } }
+  </style>
+  <!-- Match the @import delivery mechanism users paste into custom.css. -->
+  <style>@import url('/custom-db.css');</style>
+</head>
+<body class="white-theme light-theme">
+  <div id="root-container" class="theme-container">
+    <main class="theme-container-inner">
+      <div id="main-content-container">
+        <div class="cp__sidebar-main-content is-journals">
+          <div class="ls-page-title content title"><a href="#journal" class="page-title">A day of focused writing</a></div>
+          <div class="content">
+            <div id="writing-block" class="ls-block">
+              <div class="block-main-container"><div class="block-main-content">
+                <div class="block-head-wrap">Keep a clear journal with <span class="block-tags"><span class="block-tag"><a class="hash-symbol" href="#Project">#</a><a id="tag" class="tag" href="#Project">Project</a></span></span> and <a id="reference" class="page-ref" href="#Notes">Notes</a>.</div>
+              </div></div>
+            </div>
+            <div class="ls-page-properties"><div class="ls-properties-area"><div class="properties-panel">
+              <div class="property-pair property-panel-row" data-property-type="node">
+                <div class="property-key property-key-panel"><span class="property-key-inner">Status</span></div>
+                <div class="ls-block property-value-container property-value-panel"><div class="property-value-inner" data-type="node"><button id="property-editor" class="jtrigger">In progress</button></div></div>
+              </div>
+              <div class="property-pair property-panel-row" data-property-type="url">
+                <div class="property-key property-key-panel">Source</div>
+                <div class="ls-block property-value-container property-value-panel"><div class="property-value-inner" data-type="url"><a href="https://example.com/a-very-long-document-name-without-natural-breaks">https://example.com/a-very-long-document-name-without-natural-breaks</a></div></div>
+              </div>
+            </div></div></div>
+            <div class="ls-block"><p><label><input id="native-task" class="form-checkbox" type="checkbox"> Native task</label></p></div>
+            <div class="ls-block"><p><button id="db-task" class="ui__checkbox" role="checkbox" aria-checked="false" data-state="unchecked"><span aria-hidden="true">✓</span></button> DB property checkbox</p></div>
+            <div class="ls-block"><p><button id="disabled-task" class="ui__checkbox" role="checkbox" aria-checked="false" data-state="unchecked" disabled></button> Disabled task</p></div>
+            <div class="ls-block"><p><span id="inputless-task" class="ui__checkbox" role="checkbox" aria-checked="true" data-state="checked" data-checked><span aria-hidden="true">✓</span></span> Read-only checkbox state</p></div>
+            <div class="ls-table"><div class="ls-table-rows content"><div class="relative">
+              <div class="ls-table-header"><div class="ls-table-header-cell">Name</div><div class="ls-table-header-cell">Status</div></div>
+              <div data-index="0"><div class="ls-table-row ls-block"><div class="ls-table-cell"><div class="table-block-title">A long virtualized DB table row that must remain clipped to its measured row height</div></div><div class="ls-table-cell"><div>In progress</div></div></div></div>
+              <div data-index="1"><div class="ls-table-row ls-block"><div class="ls-table-cell"><div>Second row</div></div><div class="ls-table-cell"><div>Done</div></div></div></div>
+            </div></div></div>
+            <div class="extensions__code"><div class="CodeMirror cm-s-lsradix cm-s-light"><div class="CodeMirror-gutters">1</div><span>const note = "Bonofix";</span></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- Real Logseq popovers are portals outside the main theme container. -->
+  <div id="property-popup" class="ui__popover-content" role="dialog" aria-label="Edit property" hidden>
+    <label>Property value <input id="property-input" value="In progress"></label>
+    <button id="save-property">Save</button>
+  </div>
+  <script>
+    document.querySelector('#property-editor').addEventListener('click', () => {
+      document.querySelector('#property-popup').hidden = false;
+      document.querySelector('#property-input').focus();
+    });
+    document.querySelector('#save-property').addEventListener('click', () => {
+      document.querySelector('#property-editor').textContent = document.querySelector('#property-input').value;
+      document.querySelector('#property-popup').hidden = true;
+    });
+    document.querySelector('#db-task').addEventListener('click', event => {
+      const button = event.currentTarget;
+      const checked = button.getAttribute('aria-checked') !== 'true';
+      button.setAttribute('aria-checked', checked);
+      button.setAttribute('data-state', checked ? 'checked' : 'unchecked');
+      button.toggleAttribute('data-checked', checked);
+    });
+  </script>
+</body>
+</html>

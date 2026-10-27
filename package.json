@@ -7,9 +7,13 @@
   "main": "source/index.sass",
   "scripts": {
     "watch": "sass --watch source:css",
-    "build": "sass source/index.scss custom.css --no-source-map && npx uglifycss custom.css --output custom.css"
+    "watch:db": "sass --watch source/db.scss:css/db.css",
+    "build": "sass source/index.scss custom.css --no-source-map && npx uglifycss custom.css --output custom.css",
+    "build:db": "sass source/db.scss custom-db.css --no-source-map && uglifycss custom-db.css --output custom-db.css",
+    "test:db": "node tests/db-theme.cjs"
   },
   "devDependencies": {
+    "playwright": "1.58.2",
     "sass": "^1.69.5",
     "uglifycss": "^0.0.29"
   },
